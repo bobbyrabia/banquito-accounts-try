@@ -39,3 +39,6 @@ out/
 /build/generated/
 /build/resources/
 /build/tmp/
+/build/libs/
+/build/reports/
+/build/test-results/
