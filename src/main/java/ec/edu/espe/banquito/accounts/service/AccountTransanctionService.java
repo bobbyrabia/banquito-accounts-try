@@ -87,6 +87,7 @@ public class AccountTransanctionService {
                             .debtorAccount(accountTransactionReqDto.getDebtorAccount())
                             .debtorBankCode(accountTransactionReqDto.getDebtorBankCode())
                             .creationDate(new Date())
+                            .createdAt(new Date())
                             .bookingDate(new Date())
                             .valueDate(new Date())
                             .applyTax(false)
@@ -109,6 +110,7 @@ public class AccountTransanctionService {
                             .debtorAccount(accountTransactionReqDto.getDebtorAccount())
                             .debtorBankCode(accountTransactionReqDto.getDebtorBankCode())
                             .creationDate(new Date())
+                            .createdAt(new Date())
                             .bookingDate(new Date())
                             .valueDate(new Date())
                             .applyTax(false)
@@ -128,7 +130,7 @@ public class AccountTransanctionService {
                 }
 
             case "LOAN_REPAID":
-                Optional<Account> accountBanQTmp=this.accountRepository.findValidByCodeInternalAccount("20205224");
+                Optional<Account> accountBanQTmp=this.accountRepository.findValidByCodeInternalAccount(accountTransactionReqDto.getCreditorAccount());
                 if(accountDebtorTmp.isPresent()){
 
                     Double ammountDebtorTemp=accountDebtorTmp.get().getAvailableBalance().doubleValue();
@@ -144,7 +146,7 @@ public class AccountTransanctionService {
 
                     AccountTransaction accountTransactionDebtor=AccountTransaction.builder()
                             .uniqueKey(UUID.randomUUID().toString())
-                            .transactionType(AccountTransaction.TransactionType.TRANSFER)
+                            .transactionType(AccountTransaction.TransactionType.LOAN_REPAID)
                             .reference(reference)
                             .ammount((BigDecimal.valueOf(ammountTmp*-1)))
                             .balanceAfterTransaction(BigDecimal.valueOf(resultDebtor))
@@ -153,6 +155,7 @@ public class AccountTransanctionService {
                             .debtorAccount(accountTransactionReqDto.getDebtorAccount())
                             .debtorBankCode(accountTransactionReqDto.getDebtorBankCode())
                             .creationDate(new Date())
+                            .createdAt(new Date())
                             .bookingDate(new Date())
                             .valueDate(new Date())
                             .applyTax(false)
@@ -166,7 +169,7 @@ public class AccountTransanctionService {
 
                     AccountTransaction accountTransactionCredtor=AccountTransaction.builder()
                             .uniqueKey(UUID.randomUUID().toString())
-                            .transactionType(AccountTransaction.TransactionType.TRANSFER)
+                            .transactionType(AccountTransaction.TransactionType.LOAN_REPAID)
                             .reference(reference)
                             .ammount((BigDecimal.valueOf(ammountTmp)))
                             .balanceAfterTransaction(BigDecimal.valueOf(resultCredtor))
@@ -175,6 +178,7 @@ public class AccountTransanctionService {
                             .debtorAccount(accountTransactionReqDto.getDebtorAccount())
                             .debtorBankCode(accountTransactionReqDto.getDebtorBankCode())
                             .creationDate(new Date())
+                            .createdAt(new Date())
                             .bookingDate(new Date())
                             .valueDate(new Date())
                             .applyTax(false)
