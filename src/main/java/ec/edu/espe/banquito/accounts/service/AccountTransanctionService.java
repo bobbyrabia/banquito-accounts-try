@@ -58,22 +58,23 @@ public class AccountTransanctionService {
         String reference = generarNumeroReferencia();
         AccountTransaction accountTransaction=new AccountTransaction();
         Optional<Account> accountDebtorTmp=this.accountRepository.findValidByCodeInternalAccount(accountTransactionReqDto.getDebtorAccount());
+        Double ammountTmp=accountTransactionReqDto.getAmmount().doubleValue();
         switch (accountTransactionReqDto.getTransactionType()){
             case "TRANSFER":
                 Optional<Account> accountCredtorTmp=this.accountRepository.findValidByCodeInternalAccount(accountTransactionReqDto.getCreditorAccount());
-                Double ammountTmp=accountTransactionReqDto.getAmmount().doubleValue();
-                
                 if(accountDebtorTmp.isPresent() && accountCredtorTmp.isPresent()){
 
                     Double ammountDebtorTemp=accountDebtorTmp.get().getAvailableBalance().doubleValue();
                     Double resultDebtor=ammountDebtorTemp-ammountTmp;
                     System.out.println(resultDebtor);
                     accountDebtorTmp.get().setAvailableBalance(BigDecimal.valueOf(resultDebtor));
+                    accountDebtorTmp.get().setTotalBalance(BigDecimal.valueOf(resultDebtor));
 
                     Double ammountCredtorTemp=accountCredtorTmp.get().getAvailableBalance().doubleValue();
                     Double resultCredtor=ammountCredtorTemp +ammountTmp;
                     System.out.println(resultCredtor);
                     accountCredtorTmp.get().setAvailableBalance(BigDecimal.valueOf(resultCredtor));
+                    accountCredtorTmp.get().setTotalBalance(BigDecimal.valueOf(resultCredtor));
 
                     AccountTransaction accountTransactionDebtor=AccountTransaction.builder()
                             .uniqueKey(UUID.randomUUID().toString())
@@ -86,6 +87,7 @@ public class AccountTransanctionService {
                             .debtorAccount(accountTransactionReqDto.getDebtorAccount())
                             .debtorBankCode(accountTransactionReqDto.getDebtorBankCode())
                             .creationDate(new Date())
+                            .createdAt(new Date())
                             .bookingDate(new Date())
                             .valueDate(new Date())
                             .applyTax(false)
@@ -108,6 +110,7 @@ public class AccountTransanctionService {
                             .debtorAccount(accountTransactionReqDto.getDebtorAccount())
                             .debtorBankCode(accountTransactionReqDto.getDebtorBankCode())
                             .creationDate(new Date())
+                            .createdAt(new Date())
                             .bookingDate(new Date())
                             .valueDate(new Date())
                             .applyTax(false)
@@ -126,7 +129,75 @@ public class AccountTransanctionService {
 
                 }
 
+            case "LOAN_REPAID":
+                Optional<Account> accountBanQTmp=this.accountRepository.findValidByCodeInternalAccount(accountTransactionReqDto.getCreditorAccount());
+                if(accountDebtorTmp.isPresent()){
 
+                    Double ammountDebtorTemp=accountDebtorTmp.get().getAvailableBalance().doubleValue();
+                    Double resultDebtor=ammountDebtorTemp-ammountTmp;
+                    accountDebtorTmp.get().setAvailableBalance(BigDecimal.valueOf(resultDebtor));
+                    accountDebtorTmp.get().setTotalBalance(BigDecimal.valueOf(resultDebtor));
+
+                    Double ammountCredtorTemp=accountBanQTmp.get().getAvailableBalance().doubleValue();
+                    Double resultCredtor=ammountCredtorTemp +ammountTmp;
+                    System.out.println(resultCredtor);
+                    accountBanQTmp.get().setAvailableBalance(BigDecimal.valueOf(resultCredtor));
+                    accountBanQTmp.get().setTotalBalance(BigDecimal.valueOf(resultCredtor));
+
+                    AccountTransaction accountTransactionDebtor=AccountTransaction.builder()
+                            .uniqueKey(UUID.randomUUID().toString())
+                            .transactionType(AccountTransaction.TransactionType.LOAN_REPAID)
+                            .reference(reference)
+                            .ammount((BigDecimal.valueOf(ammountTmp*-1)))
+                            .balanceAfterTransaction(BigDecimal.valueOf(resultDebtor))
+                            .creditorAccount(accountTransactionReqDto.getCreditorAccount())
+                            .creditorBankCode(accountTransactionReqDto.getCreditorBankCode())
+                            .debtorAccount(accountTransactionReqDto.getDebtorAccount())
+                            .debtorBankCode(accountTransactionReqDto.getDebtorBankCode())
+                            .creationDate(new Date())
+                            .createdAt(new Date())
+                            .bookingDate(new Date())
+                            .valueDate(new Date())
+                            .applyTax(false)
+                            .state(AccountTransaction.State.ACT)
+                            .notes(accountTransactionReqDto.getNotes())
+                            .account(accountDebtorTmp.get())
+                            .valid(true)
+                            .build();
+
+                    
+
+                    AccountTransaction accountTransactionCredtor=AccountTransaction.builder()
+                            .uniqueKey(UUID.randomUUID().toString())
+                            .transactionType(AccountTransaction.TransactionType.LOAN_REPAID)
+                            .reference(reference)
+                            .ammount((BigDecimal.valueOf(ammountTmp)))
+                            .balanceAfterTransaction(BigDecimal.valueOf(resultCredtor))
+                            .creditorAccount(accountTransactionReqDto.getCreditorAccount())
+                            .creditorBankCode(accountTransactionReqDto.getCreditorBankCode())
+                            .debtorAccount(accountTransactionReqDto.getDebtorAccount())
+                            .debtorBankCode(accountTransactionReqDto.getDebtorBankCode())
+                            .creationDate(new Date())
+                            .createdAt(new Date())
+                            .bookingDate(new Date())
+                            .valueDate(new Date())
+                            .applyTax(false)
+                            .state(AccountTransaction.State.ACT)
+                            .notes(accountTransactionReqDto.getNotes())
+                            .account(accountBanQTmp.get())
+                            .valid(true)
+                            .build();
+
+                    
+
+                    this.accountTransactionRepository.save(accountTransactionDebtor);
+                    this.accountTransactionRepository.save(accountTransactionCredtor);
+                    this.accountRepository.save(accountBanQTmp.get());
+                    this.accountRepository.save(accountDebtorTmp.get());
+
+                }
+                
+                
         }
         return  this.accountTransactionMapper.toRes(accountTransaction);
     }
