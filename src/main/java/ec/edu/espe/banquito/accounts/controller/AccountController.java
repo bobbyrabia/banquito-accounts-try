@@ -49,7 +49,7 @@ public class AccountController {
     @GetMapping("/product/{productUK}")
     public ResponseEntity<ProductResDto> findByRestProduct(@PathVariable("productUK") String productUK)
     {
-        String url = "http://localhost:8080/api/v1/productAccount/productos/"+productUK;
+        String url = "https://banquito-ws-passive-products-zsorzzk5da-uc.a.run.app/api/v1/productAccount/productos/"+productUK;
         ProductResDto productResDto = restTemplate.getForObject(url, ProductResDto.class);
         return ResponseEntity.ok(productResDto);
     }
