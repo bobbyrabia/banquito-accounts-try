@@ -2,6 +2,7 @@ package ec.edu.espe.banquito.accounts.service;
 
 import ec.edu.espe.banquito.accounts.controller.req.AccountReqDto;
 import ec.edu.espe.banquito.accounts.controller.res.AccountResDto;
+import ec.edu.espe.banquito.accounts.exception.CustomException;
 import ec.edu.espe.banquito.accounts.model.Account;
 import ec.edu.espe.banquito.accounts.repository.AccountRepository;
 import ec.edu.espe.banquito.accounts.service.mapper.AccountMapper;
@@ -29,7 +30,9 @@ public class AccountService {
     public Account findByUK(Integer accountId){
         return this.accountRepository.findValidById(accountId).orElseThrow(()->{
             log.error("Account with id {} not found", accountId);
-            return new RuntimeException("Account with id "+accountId+"not found");
+            return new CustomException("Account with id "+accountId+"not found",
+                    "NOT_FOUND",
+                    404);
         });
     }
 
@@ -39,6 +42,8 @@ public class AccountService {
         if(accountList.isEmpty()){
             log.error("Client does not have accounts");
             throw new RuntimeException("Client does not have accounts");
+        }else{
+            log.info("Ingreso exitoso");
         }
         return accountList;
 
