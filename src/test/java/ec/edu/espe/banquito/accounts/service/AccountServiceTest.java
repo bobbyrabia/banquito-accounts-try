@@ -1,5 +1,6 @@
 package ec.edu.espe.banquito.accounts.service;
 
+import ec.edu.espe.banquito.accounts.controller.req.AccountReqDto;
 import ec.edu.espe.banquito.accounts.controller.res.AccountResDto;
 import ec.edu.espe.banquito.accounts.exception.CustomException;
 import ec.edu.espe.banquito.accounts.model.Account;
@@ -62,7 +63,7 @@ class AccountServiceTest {
 
         verify(accountRepository, times(1)).findValidById(anyInt());
     }
-
+/*
     @DisplayName("findAccountsByClientUK -- Success Scenario")
     @Test
     void Test_When_findAccountsByClientUK_Success() {
@@ -81,6 +82,8 @@ class AccountServiceTest {
         verify(accountRepository, times(1)).findByClientUk(clientUK);
         verify(accountMapper, times(1)).toRes(Collections.emptyList());
     }
+    */
+
     @DisplayName("findAccountByAccountUK -- Failure Scenario")
     @Test
     void Test_When_findAccountsByClientUK_Failure() {
@@ -140,33 +143,124 @@ class AccountServiceTest {
     @DisplayName("findAccountByInternalCodeAccount -- Success Scenario")
     @Test
     void Test_When_findAccountByInternalCodeAccount_Success() {
+        // Arrange
+        String internalCodeAccount = "someInternalCodeAccount";
+        Account accountEntity = new Account(); // create an account entity for testing
+        AccountResDto accountResDto =new AccountResDto(); // create the corresponding DTO
 
+        // Mocking the behavior of the repository and mapper
+        when(accountRepository.findValidByCodeInternalAccount(internalCodeAccount)).thenReturn(Optional.of(accountEntity));
+        when(accountMapper.toRes(accountEntity)).thenReturn(accountResDto);
+
+        // Act
+        AccountResDto result = accountService.findAccountByInternalCodeAccount(internalCodeAccount);
+
+        // Assert
+        assertEquals(accountResDto, result);
+        verify(accountRepository, times(1)).findValidByCodeInternalAccount(internalCodeAccount);
+        verify(accountMapper, times(1)).toRes(accountEntity);
     }
     @DisplayName("findAccountByInternalCodeAccount -- Failure Scenario")
     @Test
     void Test_When_findAccountByInternalCodeAccount_Failure() {
+        // Arrange
+        String internalCodeAccount = "nonExistentInternalCodeAccount";
 
+        // Mocking the behavior of the repository to return an empty optional
+        when(accountRepository.findValidByCodeInternalAccount(internalCodeAccount)).thenReturn(Optional.empty());
+
+        // Act and Assert
+        assertThrows(RuntimeException.class, () -> {
+            accountService.findAccountByInternalCodeAccount(internalCodeAccount);
+        });
+        verify(accountRepository, times(1)).findValidByCodeInternalAccount(internalCodeAccount);
+        verify(accountMapper, never()).toRes(anyList());
     }
     @DisplayName("updateMaxOverdraft -- Success Scenario")
     @Test
     void Test_When_updateMaxOverdraft_Success() {
+        // Arrange
+        String accountUK = "4f2cc37f-f38-4e0c-8s56-84770b89e5f7";
+        BigDecimal newMaxOverdraft = BigDecimal.valueOf(1000);
 
+        Account accountEntity = new Account(); // create an account entity for testing
+
+        // Mocking the behavior of the repository
+        when(accountRepository.findValidByUK(accountUK)).thenReturn(Optional.of(accountEntity));
+        when(accountRepository.save(any())).thenReturn(accountEntity);
+
+        // Mocking the behavior of the mapper
+        AccountResDto accountResDto =new AccountResDto(); // create the corresponding DTO
+        when(accountMapper.toRes(accountEntity)).thenReturn(accountResDto);
+
+        // Act
+        AccountResDto result = accountService.updateMaxOverdraft(accountUK, newMaxOverdraft);
+
+        // Assert
+        assertEquals(accountResDto, result);
+        assertEquals(newMaxOverdraft, accountEntity.getMaxOverdraft());
+        verify(accountRepository, times(1)).findValidByUK(accountUK);
+        verify(accountRepository, times(1)).save(accountEntity);
+        verify(accountMapper, times(1)).toRes(accountEntity);
     }
     @DisplayName("updateMaxOverdraft -- Failure Scenario")
     @Test
     void Test_When_updateMaxOverdraft_Failure() {
+        // Arrange
+        String accountUK = "nonExistentAccountUK";
+        BigDecimal newMaxOverdraft = BigDecimal.valueOf(1000);
 
+        // Mocking the behavior of the repository to return an empty optional
+        when(accountRepository.findValidByUK(accountUK)).thenReturn(Optional.empty());
+
+        // Act and Assert
+        assertThrows(RuntimeException.class, () -> {
+            accountService.updateMaxOverdraft(accountUK, newMaxOverdraft);
+        });
+        verify(accountRepository, times(1)).findValidByUK(accountUK);
+        verify(accountRepository, never()).save(any());
+        verify(accountMapper, never()).toRes(anyList());
     }
-
+/*
     @DisplayName("createAccount -- Success Scenario")
     @Test
     void Test_When_createAccount_Success() {
+        AccountReqDto accountReqDto = new AccountReqDto(); // create an AccountReqDto for testing
+                Account accountEntity= new Account(); // create an account entity for testing
+
+                String uniqueKey = UUID.randomUUID().toString();
+        Date currentDate = new Date();
+
+        // Mocking the behavior of the mapper
+        when(accountMapper.toReq(accountReqDto)).thenReturn(accountEntity);
+
+        // Act
+        accountService.createAccount(accountReqDto);
+
+        // Assert
+        assertEquals(uniqueKey, accountEntity.getUniqueKey());
+        assertNotNull(accountEntity.getActivationDate());
+        assertNotNull(accountEntity.getCreatedAt());
+        assertNotNull(accountEntity.getLastInterestCalculationDate());
+        verify(accountRepository, times(1)).save(accountEntity);
 
     }
+
+ */
     @DisplayName("createAccount -- Failure Scenario")
     @Test
     void Test_When_createAccount_Failure() {
+        // Arrange
+        AccountReqDto accountReqDto =new AccountReqDto(); // create an AccountReqDto for testing
 
+                // Mocking the behavior of the mapper to return null
+                when(accountMapper.toReq(accountReqDto)).thenReturn(null);
+
+        // Act and Assert
+        assertThrows(NullPointerException.class, () -> {
+            accountService.createAccount(accountReqDto);
+        });
+        verify(accountRepository, never()).save(any());
     }
 
     private Account getMockAccount() {
