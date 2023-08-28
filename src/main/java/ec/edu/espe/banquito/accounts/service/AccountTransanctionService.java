@@ -59,6 +59,7 @@ public class AccountTransanctionService {
         AccountTransaction accountTransaction=new AccountTransaction();
         Optional<Account> accountDebtorTmp=this.accountRepository.findValidByCodeInternalAccount(accountTransactionReqDto.getDebtorAccount());
         Double ammountTmp=accountTransactionReqDto.getAmmount().doubleValue();
+        AccountTransaction accountTransactionDebtor = AccountTransaction.builder().build();
         switch (accountTransactionReqDto.getTransactionType()){
             case "TRANSFER":
                 Optional<Account> accountCredtorTmp=this.accountRepository.findValidByCodeInternalAccount(accountTransactionReqDto.getCreditorAccount());
@@ -76,7 +77,7 @@ public class AccountTransanctionService {
                     accountCredtorTmp.get().setAvailableBalance(BigDecimal.valueOf(resultCredtor));
                     accountCredtorTmp.get().setTotalBalance(BigDecimal.valueOf(resultCredtor));
 
-                    AccountTransaction accountTransactionDebtor=AccountTransaction.builder()
+                     accountTransactionDebtor=AccountTransaction.builder()
                             .uniqueKey(UUID.randomUUID().toString())
                             .transactionType(AccountTransaction.TransactionType.TRANSFER)
                             .reference(reference)
@@ -128,7 +129,7 @@ public class AccountTransanctionService {
                     this.accountRepository.save(accountDebtorTmp.get());
 
                 }
-
+                break;
             case "LOAN_REPAID":
                 Optional<Account> accountBanQTmp=this.accountRepository.findValidByCodeInternalAccount(accountTransactionReqDto.getCreditorAccount());
                 if(accountDebtorTmp.isPresent()){
@@ -144,7 +145,7 @@ public class AccountTransanctionService {
                     accountBanQTmp.get().setAvailableBalance(BigDecimal.valueOf(resultCredtor));
                     accountBanQTmp.get().setTotalBalance(BigDecimal.valueOf(resultCredtor));
 
-                    AccountTransaction accountTransactionDebtor=AccountTransaction.builder()
+                     accountTransactionDebtor=AccountTransaction.builder()
                             .uniqueKey(UUID.randomUUID().toString())
                             .transactionType(AccountTransaction.TransactionType.LOAN_REPAID)
                             .reference(reference)
@@ -194,12 +195,15 @@ public class AccountTransanctionService {
                     this.accountTransactionRepository.save(accountTransactionCredtor);
                     this.accountRepository.save(accountBanQTmp.get());
                     this.accountRepository.save(accountDebtorTmp.get());
-
+                    
                 }
-                
+                break;
                 
         }
-        return  this.accountTransactionMapper.toRes(accountTransaction);
+        
+        
+        
+        return  this.accountTransactionMapper.toRes(accountTransactionDebtor);
     }
 
     @Autowired
