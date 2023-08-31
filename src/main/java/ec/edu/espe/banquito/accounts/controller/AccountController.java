@@ -20,7 +20,6 @@ import javax.naming.spi.DirStateFactory.Result;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/accounts")
-@CrossOrigin({"*"})
 public class AccountController {
     private final RestTemplate restTemplate;
     private final AccountService accountService;
