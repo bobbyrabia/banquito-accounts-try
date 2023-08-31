@@ -13,7 +13,7 @@ public class Cors {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("*")
+                        .allowedOrigins("https://bq1bancaweb.web.app/client")
                         .exposedHeaders("Content-Disposition")
                         .allowedMethods("*");
             }
