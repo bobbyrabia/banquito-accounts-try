@@ -13,11 +13,7 @@ public class Cors {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://striped-reserve-397605.web.app")
-                        .allowedOrigins("https://banquito-backoffice.web.app")
-                        .allowedOrigins("https://banquito-web.web.app")
-                        .allowedOrigins("https://banquito-tellerapp.web.app")
-                        .allowedOrigins("http://localhost:4200")
+                        .allowedOrigins("https://striped-reserve-397605.web.app","https://banquito-backoffice.web.app","https://banquito-web.web.app","https://banquito-tellerapp.web.app","http://localhost:4200","https://banquito-bancaweb-v2.web.app")
                         .exposedHeaders("Content-Disposition","Content-Type")
                         .allowedMethods("*");
             }
