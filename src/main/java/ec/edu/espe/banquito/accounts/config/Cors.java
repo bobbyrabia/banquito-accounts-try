@@ -13,10 +13,9 @@ public class Cors {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://localhost:4200/")
-                        .allowedOrigins("http://localhost:4200")
                         .allowedOrigins("https://banquito-bancaweb.web.app/")
                         .allowedOrigins("https://arquitectura-1sa89r3l.uc.gateway.dev/")
+                        .allowedOrigins("https://localhost:4200/")
                         .exposedHeaders("Content-Disposition")
                         .allowedMethods("*");
             }
