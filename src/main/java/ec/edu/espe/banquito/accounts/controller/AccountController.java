@@ -19,7 +19,7 @@ import javax.naming.spi.DirStateFactory.Result;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/accounts")
+@RequestMapping("/api/v1/accounts")
 public class AccountController {
     private final RestTemplate restTemplate;
     private final AccountService accountService;
