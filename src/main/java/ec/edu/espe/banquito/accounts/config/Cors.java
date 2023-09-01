@@ -14,6 +14,7 @@ public class Cors {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("https://banquito-bancaweb.web.app/")
+                        .allowedOrigins("https://arquitectura-1sa89r3l.uc.gateway.dev/")
                         .exposedHeaders("Content-Disposition")
                         .allowedMethods("*");
             }
