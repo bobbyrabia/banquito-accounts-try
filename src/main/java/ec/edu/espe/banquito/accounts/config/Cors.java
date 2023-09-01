@@ -14,10 +14,7 @@ public class Cors {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("https://banquito-bancaweb.web.app/")
-                        .allowedOrigins("https://striped-reserve-397605.web.app/")
-                        .allowedOrigins("https://banquito-backoffice.web.app/")
-                        .allowedOrigins("https://banquito-tellerapp.web.app/")
-                        .exposedHeaders("Content-Disposition","Content-Type")
+                        .exposedHeaders("Content-Disposition")
                         .allowedMethods("*");
             }
         };
