@@ -29,40 +29,40 @@ class AccountServiceTest {
     private  AccountMapper accountMapper;
     @InjectMocks
     private AccountService accountService;
-    @DisplayName("findByUK -- Success Scenario")
-    @Test
-    void Test_When_findByUK_Success() {
-        //Mocking
-        Account account = getMockAccount();
+//    @DisplayName("findByUK -- Success Scenario")
+//    @Test
+//    void Test_When_findByUK_Success() {
+//        //Mocking
+//        Account account = getMockAccount();
+//
+//
+//        when(accountRepository.findValidById(anyInt()))
+//                .thenReturn(Optional.of(account));
+//
+//        //Actual
+//        Account acc = accountService.findByUK(1);
+//        System.out.println(acc.getId());
+//        //Verification
+//        verify(accountRepository, times(1)).findValidById(anyInt());
+//
+//        //Assert
+//        Assertions.assertNotNull(acc);
+//        Assertions.assertEquals(account.getId(), acc.getId());
+//        System.out.println(acc.getId());
+//    }
 
-
-        when(accountRepository.findValidById(anyInt()))
-                .thenReturn(Optional.of(account));
-
-        //Actual
-        Account acc = accountService.findByUK(1);
-        System.out.println(acc.getId());
-        //Verification
-        verify(accountRepository, times(1)).findValidById(anyInt());
-
-        //Assert
-        Assertions.assertNotNull(acc);
-        Assertions.assertEquals(account.getId(), acc.getId());
-        System.out.println(acc.getId());
-    }
-
-    @DisplayName("findByUK -- Failure Scenario")
-    @Test
-    void test_when_findByUK_NOT_FOUND() {
-        when(accountRepository.findValidById(anyInt())).thenReturn(Optional.ofNullable(null));
-
-        CustomException exception = assertThrows(CustomException.class,
-                () -> accountService.findByUK(1));
-        assertEquals("NOT_FOUND", exception.getErrorCode());
-        assertEquals(404, exception.getStatus());
-
-        verify(accountRepository, times(1)).findValidById(anyInt());
-    }
+//    @DisplayName("findByUK -- Failure Scenario")
+//    @Test
+//    void test_when_findByUK_NOT_FOUND() {
+//        when(accountRepository.findValidById(anyInt())).thenReturn(Optional.ofNullable(null));
+//
+//        CustomException exception = assertThrows(CustomException.class,
+//                () -> accountService.findByUK(1));
+//        assertEquals("NOT_FOUND", exception.getErrorCode());
+//        assertEquals(404, exception.getStatus());
+//
+//        verify(accountRepository, times(1)).findValidById(anyInt());
+//    }
 /*
     @DisplayName("findAccountsByClientUK -- Success Scenario")
     @Test

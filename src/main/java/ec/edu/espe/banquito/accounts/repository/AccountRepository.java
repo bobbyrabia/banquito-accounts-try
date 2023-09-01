@@ -13,8 +13,8 @@ import ec.edu.espe.banquito.accounts.model.Account;
 @Repository
 public interface AccountRepository extends JpaRepository<Account,Integer> {
     @Query("Select ac from Account  ac " +
-            "where (ac.valid=true) and ac.id=:accountId")
-    Optional<Account>findValidById(Integer accountId);
+            "where (ac.valid=true) and ac.uniqueKey=:accountUk")
+    Optional<Account>findValidByUniqueKey(String accountUk);
 
     @Query("SELECT  ac from Account ac " +
             "where (ac.valid=true) and ac.clientUk=:clientUK")

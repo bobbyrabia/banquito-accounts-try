@@ -3,6 +3,7 @@ package ec.edu.espe.banquito.accounts.service;
 import ec.edu.espe.banquito.accounts.controller.req.AccountReqDto;
 import ec.edu.espe.banquito.accounts.controller.req.AccountTransactionReqDto;
 import ec.edu.espe.banquito.accounts.controller.res.AccountTransactionResDto;
+import ec.edu.espe.banquito.accounts.exception.CustomException;
 import ec.edu.espe.banquito.accounts.model.Account;
 import ec.edu.espe.banquito.accounts.model.AccountTransaction;
 import ec.edu.espe.banquito.accounts.repository.AccountRepository;
@@ -37,7 +38,9 @@ public class AccountTransanctionService {
         List<AccountTransactionResDto> accountTransactionList=this.accountTransactionMapper.toRes(this.accountTransactionRepository.findValidByAccountUniqueKeyOrderByBookingDateDesc(accountUK));
         if(accountTransactionList.isEmpty()){
             log.error("No transactions in this account");
-            throw new RuntimeException("No transactions in this account");
+            throw new CustomException("No transactions in this account",
+                    "NOT_FOUND",
+                    404);
         }
 
         return accountTransactionList;
@@ -48,9 +51,13 @@ public class AccountTransanctionService {
             this.accountTransactionRepository.findValidByAccountUniqueKeyAndBookingDateBetweenOrderByBookingDateDesc(accountUK, startDate, endDate)
         );
 
+
         if (accountTransactionList.isEmpty()) {
             log.error("No transactions in this account within the specified date range");
-            throw new RuntimeException("No transactions in this account within the specified date range");
+
+            throw new CustomException("No transactions in this account within the specified date range",
+                    "NOT_FOUND",
+                    404);
         }
 
         return accountTransactionList;

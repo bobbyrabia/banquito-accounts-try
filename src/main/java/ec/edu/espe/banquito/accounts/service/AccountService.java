@@ -27,10 +27,10 @@ public class AccountService {
     private final AccountMapper accountMapper;
 
     @Transactional
-    public Account findByUK(Integer accountId){
-        return this.accountRepository.findValidById(accountId).orElseThrow(()->{
-            log.error("Account with id {} not found", accountId);
-            return new CustomException("Account with id "+accountId+"not found",
+    public Account findByUK(String accountUK){
+        return this.accountRepository.findValidByUniqueKey(accountUK).orElseThrow(()->{
+            log.error("Account with UK {} not found", accountUK);
+            return new CustomException("Account with id "+accountUK+"not found",
                     "NOT_FOUND",
                     404);
         });
