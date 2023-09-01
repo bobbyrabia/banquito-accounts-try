@@ -16,7 +16,7 @@ public class Cors {
                         .allowedOrigins("https://banquito-bancaweb.web.app/")
                         .allowedOrigins("https://arquitectura-1sa89r3l.uc.gateway.dev/")
                         .allowedOrigins("https://localhost:4200/")
-                        .allowedOrigins("https://localhost:4200")
+                        .allowedOrigins("https://localhost:4200/client")
                         .exposedHeaders("Content-Disposition")
                         .allowedMethods("*");
             }
