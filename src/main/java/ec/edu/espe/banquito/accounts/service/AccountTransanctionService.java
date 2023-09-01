@@ -10,6 +10,7 @@ import ec.edu.espe.banquito.accounts.repository.AccountTransactionRepository;
 import ec.edu.espe.banquito.accounts.service.mapper.AccountTransactionMapper;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 @Slf4j
+@Builder
 public class AccountTransanctionService {
     private final AccountTransactionMapper accountTransactionMapper;
     private final AccountTransactionRepository accountTransactionRepository;
@@ -130,6 +132,37 @@ public class AccountTransanctionService {
 
                 }
                 break;
+            case "WHITDRAWL":
+                if(accountDebtorTmp.isPresent()){
+                    BigDecimal accountBalanceInitial=accountDebtorTmp.get().getAvailableBalance();
+                    BigDecimal newAccountBalance=accountBalanceInitial.subtract(BigDecimal.valueOf(ammountTmp));
+                    accountDebtorTmp.get().setAvailableBalance(newAccountBalance);
+                    AccountTransaction accountTransactionWithdrawl=AccountTransaction.builder()
+                            .uniqueKey(UUID.randomUUID().toString())
+                            .transactionType(AccountTransaction.TransactionType.WITHDRAWAL)
+                            .reference(reference)
+                            .ammount(BigDecimal.valueOf(ammountTmp))
+                            .balanceAfterTransaction(newAccountBalance)
+                            .creditorAccount(null)
+                            .creditorAccount(null)
+                            .debtorAccount(accountDebtorTmp.get().getCodeInternalAccount())
+                            .debtorBankCode("BANQ")
+                            .creationDate(new Date())
+                            .bookingDate(new Date())
+                            .applyTax(false)
+                            .state(AccountTransaction.State.ACT)
+                            .notes("Withdrawl from Teller App")
+                            .account(accountDebtorTmp.get())
+                            .createdAt(new Date())
+                            .valueDate(new Date())
+                            .valid(true)
+                            .build();
+                    accountTransactionDebtor=accountTransactionWithdrawl;
+                    this.accountTransactionRepository.save(accountTransactionWithdrawl);
+                    this.accountRepository.save(accountDebtorTmp.get());
+                    break;
+
+                }
             case "LOAN_REPAID":
                 Optional<Account> accountBanQTmp=this.accountRepository.findValidByCodeInternalAccount(accountTransactionReqDto.getCreditorAccount());
                 if(accountDebtorTmp.isPresent()){
@@ -189,12 +222,15 @@ public class AccountTransanctionService {
                             .valid(true)
                             .build();
 
+
                     
 
                     this.accountTransactionRepository.save(accountTransactionDebtor);
                     this.accountTransactionRepository.save(accountTransactionCredtor);
                     this.accountRepository.save(accountBanQTmp.get());
                     this.accountRepository.save(accountDebtorTmp.get());
+
+
                     
                 }
                 break;
