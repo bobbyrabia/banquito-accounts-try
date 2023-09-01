@@ -17,7 +17,7 @@ public class Cors {
                         .allowedOrigins("https://striped-reserve-397605.web.app/")
                         .allowedOrigins("https://banquito-backoffice.web.app/")
                         .allowedOrigins("https://banquito-tellerapp.web.app/")
-                        .exposedHeaders("Content-Disposition")
+                        .exposedHeaders("Content-Disposition","Content-Type")
                         .allowedMethods("*");
             }
         };
